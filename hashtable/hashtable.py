@@ -26,6 +26,11 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+        h = 14695981039346656037
+        for b in str(key).encode():
+            h *= 1099511628211
+            h ^= b
+        return h
 
     def _hash(self, key):
         return hash(key)
@@ -35,19 +40,19 @@ class HashTable:
         DJB2 32-bit hash function
         Implement this, and/or FNV-1.
         """
-        # hash = 5381
-        # for i in key:
-        #     hash = ((hash << 5 ) + hash) + ord(i)
-        # return hash
+        hash = 5381
+        for i in key:
+            hash = ((hash << 5 ) + hash) + ord(i)
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
+        return self.fnv1(key) % self.capacity
         #return self.djb2(key) % self.capacity
-        return self._hash(key) % self.capacity
+        #return self._hash(key) % self.capacity
 
 
     def put(self, key, value):
@@ -84,9 +89,10 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        if self.storage[index] is None:
+        if self.storage[index] == None:
             return None
-        return self.storage[index]
+        else:
+            return self.storage[index].value
 
     def resize(self):
         """
@@ -103,7 +109,8 @@ if __name__ == "__main__":
     ht.put("line_2", "Filled beyond capacity")
     ht.put("line_3", "Linked list saves the day!")
 
-    print("")
+    for i in ht.storage:
+        print(f"self.storage>>>>>{i}")
 
     # Test storing beyond capacity
     print(ht.get("line_1"))
