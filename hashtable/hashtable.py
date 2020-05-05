@@ -16,6 +16,9 @@ class HashTable:
 
     Implement this.
     """
+    def __init__(self,capacity):
+        self.capacity = capacity
+        self.storage = [None] * capacity
 
     def fnv1(self, key):
         """
@@ -24,12 +27,18 @@ class HashTable:
         Implement this, and/or DJB2.
         """
 
+    def _hash(self, key):
+        return hash(key)
+
     def djb2(self, key):
         """
         DJB2 32-bit hash function
-
         Implement this, and/or FNV-1.
         """
+        # hash = 5381
+        # for i in key:
+        #     hash = ((hash << 5 ) + hash) + ord(i)
+        # return hash
 
     def hash_index(self, key):
         """
@@ -37,7 +46,9 @@ class HashTable:
         between within the storage capacity of the hash table.
         """
         #return self.fnv1(key) % self.capacity
-        return self.djb2(key) % self.capacity
+        #return self.djb2(key) % self.capacity
+        return self._hash(key) % self.capacity
+
 
     def put(self, key, value):
         """
@@ -47,6 +58,10 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        if self.storage[index] is not None:
+            print('collision imminent')
+        self.storage[index] = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -56,6 +71,9 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        self.storage[index] = None
+
 
     def get(self, key):
         """
@@ -65,6 +83,10 @@ class HashTable:
 
         Implement this.
         """
+        index = self.hash_index(key)
+        if self.storage[index] is None:
+            return None
+        return self.storage[index]
 
     def resize(self):
         """
