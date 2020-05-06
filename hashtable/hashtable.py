@@ -127,30 +127,16 @@ class HashTable:
         # else:
         #     return self.storage[index].value
 
-    def resize(self, capacity=None):
+    def resize(self):
         """
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
 
         Implement this.
         """
-        if capacity is not None:
-            self.capacity = capacity
-        else:
-            self.capacity = self.capacity * 2
-        tempStor = self.storage
+        self.storage = self.storage + [None] * self.capacity
+        return self.storage
 
-        self.storage = [None] * self.capacity
-
-        for i in tempStor:
-            r = i
-
-            while r is not None:
-                prev = r
-                r = prev.next
-                prev.next = None
-
-                self.put(prev.key, prev.value)
 
 
 if __name__ == "__main__":
