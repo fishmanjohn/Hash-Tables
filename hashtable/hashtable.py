@@ -20,6 +20,8 @@ class HashTable:
     def __init__(self,capacity):
         self.capacity = capacity
         self.storage = [None] * capacity
+        self.size = 0
+        self.load = 0
 
     def fnv1(self, key):
         """
@@ -55,6 +57,10 @@ class HashTable:
         #return self.djb2(key) % self.capacity
         #return self._hash(key) % self.capacity
 
+    def get_load(self):
+        load = float(self.size / len(self.storage))
+        return load
+
 
     def put(self, key, value):
         """
@@ -64,11 +70,16 @@ class HashTable:
 
         Implement this.
         """
+        if self.get_load() >= 0.7:
+            self.resize()
+
         index = self.hash_index(key)
         current = self.storage[index]
-
+        
+       
         if current is None:
             self.storage[index] = HashTableEntry(key, value)
+            self.size += 1 
             return
         if current.key == key:
             current.value = value
@@ -122,6 +133,7 @@ class HashTable:
             current = current.next
 
         return current.value
+
         # if self.storage[index] == None:
         #     return None
         # else:
@@ -136,6 +148,7 @@ class HashTable:
         """
         self.storage = self.storage + [None] * self.capacity
         return self.storage
+        print(self.storage)
 
 
 
