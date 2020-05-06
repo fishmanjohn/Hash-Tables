@@ -9,6 +9,7 @@ class HashTableEntry:
         self.next = None
 
 
+
 class HashTable:
     """
     A hash table that with `capacity` buckets
@@ -64,9 +65,20 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        if self.storage[index] is not None:
-            print('collision imminent')
-        self.storage[index] = HashTableEntry(key, value)
+        current = self.storage[index]
+
+        if current is None:
+            self.storage[index] = HashTableEntry(key, value)
+            return
+        if current.key == key:
+            current.value = value
+            return
+        while current.next is not None:
+            if current.next.key == key:
+                current.next.value = value
+                return 
+            current = current.next
+        current.next = HashTableEntry(key, value)
 
     def delete(self, key):
         """
@@ -77,7 +89,19 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        self.storage[index] = None
+        current = self.storage[index]
+        #self.storage[index] = None
+        while current.key != key:
+            if current.next is None:
+                return False
+            current = current.next
+
+        curvalue = None
+        if current.key == key:
+            curvalue = current.value
+            current.value = None
+
+        return curvalue
 
 
     def get(self, key):
@@ -89,18 +113,45 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        if self.storage[index] == None:
-            return None
-        else:
-            return self.storage[index].value
+        current = self.storage[index]
+        if current is None:
+            return False
+        while current.key != key:
+            if current.next is None:
+                return False
+            current = current.next
 
-    def resize(self):
+        return current.value
+        # if self.storage[index] == None:
+        #     return None
+        # else:
+        #     return self.storage[index].value
+
+    def resize(self, capacity=None):
         """
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
 
         Implement this.
         """
+        if capacity is not None:
+            self.capacity = capacity
+        else:
+            self.capacity = self.capacity * 2
+        tempStor = self.storage
+
+        self.storage = [None] * self.capacity
+
+        for i in tempStor:
+            r = i
+
+            while r is not None:
+                prev = r
+                r = prev.next
+                prev.next = None
+
+                self.put(prev.key, prev.value)
+
 
 if __name__ == "__main__":
     ht = HashTable(2)
