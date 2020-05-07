@@ -113,6 +113,27 @@ class HashTable:
             current.value = None
 
         return curvalue
+#         my_hash_index = self.hash_index(key)
+# ​
+#         node = self.storage[my_hash_index]
+#         prev = None
+# ​
+#         while node is not None and node.key != key:
+#             prev = node
+#             node = node.next
+# ​
+#         if node is None:
+#             print('Sorry, I cannot find that key.')
+# ​
+#         else:
+#             self.size -= 1
+#             if self.load < 0.2:
+#                 self.desize()
+#             if prev is None:
+#                 self.storage[my_hash_index] = node.next
+#             else:
+#                 prev.next = prev.next.next
+
 
 
     def get(self, key):
@@ -146,9 +167,19 @@ class HashTable:
 
         Implement this.
         """
-        self.storage = self.storage + [None] * self.capacity
+        self.storage = self.storage + [None] * int(self.capacity)
         return self.storage
         print(self.storage)
+
+    def desize(self):
+        old_array = self.storage
+        self.capacity = self.capacity / 2
+        new_array = [None] * int(self.capacity)
+        self.storage = new_array
+        for e in old_array:
+            if e is not None:
+                self.put(e.key, e.value)
+                e = e.next
 
 
 
